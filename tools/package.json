@@ -1,0 +1,12 @@
+{
+  "name": "fun-science-tools",
+  "private": true,
+  "description": "趣味科学乐园的小工具：局域网服务器（serve.js）和朗读音频生成（build-audio.js）",
+  "scripts": {
+    "serve": "node serve.js",
+    "audio": "node build-audio.js"
+  },
+  "devDependencies": {
+    "lamejs": "1.2.1"
+  }
+}

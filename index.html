@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>趣味科学乐园</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/" class="logo">🔬 趣味科学乐园</a>
+    <div class="top-actions">
+      <span class="star-total" id="starTotal">⭐ 0</span>
+      <button id="muteBtn" class="icon-btn" type="button" title="打开/关闭声音">🔊</button>
+    </div>
+  </header>
+
+  <main id="app"></main>
+
+  <script>
+    /* 保险：如果页面没能显示出来，就在这里告诉大人原因（故意用最老式的写法，老浏览器也能运行） */
+    (function () {
+      var errors = [];
+      window.addEventListener('error', function (e) {
+        errors.push((e.message || '脚本错误') + (e.filename ? '（' + e.filename.split('/').pop() + ' 第 ' + e.lineno + ' 行）' : ''));
+      });
+      window.addEventListener('load', function () {
+        var app = document.getElementById('app');
+        if (app.children.length) return;
+        var ua = navigator.userAgent;
+        var m = ua.match(/(Chrome|CriOS)\/(\d+)/) || ua.match(/Version\/(\d+[.\d]*).*Safari/);
+        var ver = m ? (m[2] ? 'Chrome ' + m[2] : 'Safari ' + m[1]) : '未知';
+        var ios = ua.match(/OS (\d+)_\d+ like Mac/);
+        app.innerHTML =
+          '<div style="background:#fff;border-radius:20px;padding:20px;margin-top:10px;line-height:1.8">' +
+          '<h2 style="margin:0 0 8px">😢 页面没能正常显示</h2>' +
+          '<p style="margin:0 0 8px">很可能是这个浏览器版本太旧了。请先把浏览器更新到最新版（Chrome 可以在应用商店里更新），再刷新页面试试。</p>' +
+          '<p style="margin:0;color:#6f6a85;font-size:15px">给大人看的信息：浏览器 ' + ver + (ios ? '，iOS ' + ios[1] : '') + '<br>' +
+          (errors.length ? '错误：' + errors.slice(0, 3).join('；').replace(/</g, '&lt;') : '没有捕获到具体错误') + '</p></div>';
+      });
+    })();
+  </script>
+
+  <script src="js/core.js"></script>
+  <script src="js/lessons/physics.js"></script>
+  <script src="js/lessons/math.js"></script>
+  <script src="js/lessons/chemistry.js"></script>
+  <script src="js/lessons/biology.js"></script>
+  <script src="js/lessons/astronomy.js"></script>
+  <script src="js/lessons/geography.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

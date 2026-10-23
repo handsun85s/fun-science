@@ -1,0 +1,6 @@
+# 工具依赖和现场合成的朗读缓存，不用上传
+tools/node_modules/
+tools/tts-cache/
+.claude/
+Thumbs.db
+desktop.ini
