@@ -174,7 +174,7 @@
         if (guess === prob.ans) {
           score++;
           Sci.sfx('good');
-          api.note(`✅ 对啦！${prob.a} ${prob.plus ? '+' : '−'} ${prob.b} = ${prob.ans}。（答对 ${score}/5）`);
+          api.note(`✅ 对啦！${prob.a} ${prob.plus ? '+' : '−'} ${prob.b} = ${prob.ans}。（答对 ${Math.min(score, 5)}/5）`);
           if (score === 5) api.goalDone();
         } else {
           Sci.sfx('bad');
@@ -229,7 +229,7 @@
           const s = prob.plus ? `${prob.a} + ${toTen} + ${rest}：先跳 ${toTen} 格到 10，再跳 ${rest} 格` : `${prob.a} − ${toTen} − ${rest}：先跳 ${toTen} 格回到 10，再跳 ${rest} 格`;
           D.text(ctx, '💡 凑十法：' + s, 400, 130, { size: 18, color: '#7048e8', maxW: 760 });
         }
-        D.text(ctx, `答对 ${score} / 5`, 780, 26, { size: 18, align: 'right', color: '#2f9e44' });
+        D.text(ctx, `答对 ${Math.min(score, 5)} / 5`, 780, 26, { size: 18, align: 'right', color: '#2f9e44' });
       }
       api.loop(dt => {
         if (phase === 'hop') {
