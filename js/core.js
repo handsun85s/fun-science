@@ -31,12 +31,12 @@
     FONT,
     EMOJI_FONT,
     subjects: [
-      { id: 'physics', name: '物理小实验', emoji: '⚡', color: '#ff8a3d', desc: '浮沉、磁铁、杠杆、电路、光的折射' },
-      { id: 'math', name: '数学魔法', emoji: '🔢', color: '#3d8bff', desc: '对称、乘法、钟表、分数、圆周率' },
-      { id: 'chemistry', name: '化学魔术', emoji: '🧪', color: '#9b5cff', desc: '物态、溶解、酸碱、燃烧、原子分子' },
-      { id: 'biology', name: '生命奥秘', emoji: '🌱', color: '#22a95b', desc: '发芽、蝌蚪、食物链、心脏、光合作用' },
-      { id: 'astronomy', name: '宇宙探险', emoji: '🪐', color: '#4655c4', desc: '昼夜、月相、行星、四季、卫星轨道' },
-      { id: 'geography', name: '地理探秘', emoji: '🗺️', color: '#0e9384', desc: '方向、水循环、比例尺、板块、经纬度' },
+      { id: 'physics', name: '物理小实验', emoji: '⚡', color: '#ff8a3d', desc: '浮沉、影子、磁铁、声音、杠杆、摩擦力、电路、滑轮、光、单摆' },
+      { id: 'math', name: '数学魔法', emoji: '🔢', color: '#3d8bff', desc: '图形、对称、加减、乘法、钟表、面积、分数、概率、圆周率、勾股定理' },
+      { id: 'chemistry', name: '化学魔术', emoji: '🧪', color: '#9b5cff', desc: '物态、火山、溶解、生锈、酸碱、分离、燃烧、反应快慢、原子、电解水' },
+      { id: 'biology', name: '生命奥秘', emoji: '🌱', color: '#22a95b', desc: '动物的家、发芽、植物、蝌蚪、食物链、消化、心脏、细胞、光合作用、遗传' },
+      { id: 'astronomy', name: '宇宙探险', emoji: '🪐', color: '#4655c4', desc: '星座、昼夜、火箭、月相、日月食、行星、四季、引力、卫星、宜居带' },
+      { id: 'geography', name: '地理探秘', emoji: '🗺️', color: '#0e9384', desc: '地形、方向、天气、水循环、比例尺、等高线、板块、海陆风、经纬度、岩石' },
     ],
     /* 难度等级 & 推荐年龄：二年级到六年级 */
     levels: { 1: '入门', 2: '进阶', 3: '挑战', 4: '高手', 5: '大师' },
