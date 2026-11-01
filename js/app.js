@@ -281,7 +281,10 @@
       goalBox,
       el('section', { class: 'stage-card' }, stageHost, note, controls),
       factBox,
-      quizSection(l, refreshStars),
+      quizSection(l, refreshStars, () => stageHost.scrollIntoView({ block: 'start' }), () => {
+        unlockFact();
+        factBox.scrollIntoView({ block: 'start' });
+      }),
       nav);
 
     try {
@@ -445,26 +448,53 @@
   }
 
   /* 小考验 */
-  function quizSection(l, onStar) {
+  function quizSection(l, onStar, reviewExperiment, reviewFact) {
+    const summary = el('p', { class: 'quiz-summary', role: 'status', 'aria-live': 'polite' });
+    const refreshSummary = () => {
+      const saved = Sci.progress.of(l.id).quiz;
+      const n = l.quiz.filter((q, i) => !!saved[i]).length;
+      summary.textContent = n === l.quiz.length
+        ? `两道题都答对了！再想一想：刚才的实验现象说明了什么？`
+        : `已答对 ${n} / ${l.quiz.length} 题。可以回看实验，再接着想。`;
+    };
     const box = el('section', { class: 'quiz' },
       el('h2', null, '🧠 小考验'),
-      el('p', { class: 'hint' }, '第一次就答对，每题可以得到一颗星哦！'));
+      el('p', { class: 'hint' }, '答错没关系，观察、思考后再试。每题答对都能得一颗星，不会重复奖励。'), summary);
     l.quiz.forEach((q, qi) => {
-      let tried = false, solved = false;
-      const explain = el('div', { class: 'q-explain', hidden: true });
-      const opts = el('div', { class: 'opts' });
+      const saved = Sci.progress.of(l.id);
+      let solved = !!saved.quiz[qi];
+      const wrong = Array.isArray(saved.quizWrong[qi]) ? saved.quizWrong[qi].filter(i => i !== q.answer && i >= 0 && i < q.options.length) : [];
+      const explain = el('div', { class: 'q-explain', hidden: true, 'aria-live': 'polite' });
+      const status = el('span', { class: 'q-status', hidden: !solved }, '已完成');
+      const explainSpeak = q.explain ? speakBtn(q.explain, '🔊 听听为什么') : null;
+      const help = el('div', { class: 'quiz-review', hidden: true },
+        el('button', { class: 'btn small ghost', type: 'button', onclick: reviewExperiment }, '回看实验'),
+        el('button', { class: 'btn small ghost', type: 'button', onclick: reviewFact }, '看看知识点'));
+      const opts = el('div', { class: 'opts', role: 'group', 'aria-label': '第 ' + (qi + 1) + ' 题选项' });
+      const buttons = [];
+      function showState(corrected) {
+        status.hidden = !solved;
+        help.hidden = solved || !wrong.length;
+        if (explainSpeak) explainSpeak.hidden = !solved;
+        explain.hidden = !solved && !wrong.length;
+        explain.classList.toggle('try', !solved);
+        explain.textContent = solved ? (corrected ? '✅ 想明白了，答对啦！' : '✅ 已答对！') + (q.explain || '')
+          : wrong.length ? '这个选项不符合实验现象。回看实验或知识点，再换一个答案试试。' : '';
+        buttons.forEach((b, i) => {
+          b.disabled = solved || wrong.indexOf(i) >= 0;
+          b.classList.toggle('right', solved && i === q.answer);
+          b.classList.toggle('wrong', !solved && wrong.indexOf(i) >= 0);
+          b.setAttribute('aria-pressed', String(solved && i === q.answer));
+        });
+      }
       q.options.forEach((o, oi) => {
         const b = el('button', { class: 'opt', type: 'button' }, o);
         b.addEventListener('click', () => {
-          if (solved) return;
+          if (solved || wrong.indexOf(oi) >= 0) return;
           if (oi === q.answer) {
             solved = true;
-            b.classList.add('right');
-            explain.hidden = false;
-            explain.classList.remove('try');
-            explain.textContent = '✅ 答对啦！' + (q.explain || '');
             const had = Sci.progress.of(l.id).quiz[qi];
-            if (!tried && !had) {
+            if (!had) {
               Sci.progress.update(l.id, p => { p.quiz[qi] = true; });
               const r = b.getBoundingClientRect();
               Sci.sfx('star');
@@ -475,21 +505,21 @@
               Sci.sfx('good');
             }
           } else {
-            tried = true;
-            b.classList.remove('wrong');
-            void b.offsetWidth;
-            b.classList.add('wrong');
+            wrong.push(oi);
+            Sci.progress.update(l.id, p => { p.quizWrong[qi] = wrong.slice(); });
             Sci.sfx('bad');
-            explain.hidden = false;
-            explain.classList.add('try');
-            explain.textContent = '🤔 不对哦，再想一想～';
           }
+          showState(wrong.length > 0);
+          refreshSummary();
         });
+        buttons.push(b);
         opts.append(b);
       });
-      const speak = el('button', { class: 'mini-speak', type: 'button', onclick: () => Sci.speak(q.q + '。' + q.options.join('，还是'), { manual: true }) }, '🔊');
-      box.append(el('div', { class: 'q' }, el('div', { class: 'q-title' }, `${qi + 1}. ${q.q}`, speak), opts, explain));
+      const speak = el('button', { class: 'mini-speak', type: 'button', 'aria-label': '朗读第 ' + (qi + 1) + ' 题', onclick: () => Sci.speak(q.q + '。' + q.options.join('，还是'), { manual: true }) }, '🔊');
+      showState(false);
+      box.append(el('div', { class: 'q' }, el('div', { class: 'q-title' }, `${qi + 1}. ${q.q}`, speak, status), opts, explain, explainSpeak, help));
     });
+    refreshSummary();
     return box;
   }
 

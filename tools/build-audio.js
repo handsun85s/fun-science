@@ -71,7 +71,10 @@ function collectTexts() {
   if (g) texts.push(g[1]);
   for (const l of lessons) {
     texts.push(l.intro, l.fact);
-    for (const q of l.quiz) texts.push(q.q + '。' + q.options.join('，还是'));
+    for (const q of l.quiz) {
+      texts.push(q.q + '。' + q.options.join('，还是'));
+      if (q.explain) texts.push(q.explain);
+    }
   }
   texts.push(...Sci.speechExtras);
   return { texts, lessonCount: lessons.length };

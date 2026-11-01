@@ -4,9 +4,11 @@
   "description": "趣味科学乐园的小工具：局域网服务器（serve.js）和朗读音频生成（build-audio.js）",
   "scripts": {
     "serve": "node serve.js",
-    "audio": "node build-audio.js"
+    "audio": "node build-audio.js",
+    "test:quiz": "node test-quiz.js"
   },
   "devDependencies": {
-    "lamejs": "1.2.1"
+    "lamejs": "1.2.1",
+    "playwright": "1.64.1"
   }
 }

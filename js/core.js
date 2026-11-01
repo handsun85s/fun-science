@@ -71,12 +71,12 @@
     },
   };
 
-  /* 进度：每课最多 3 颗星 = 完成任务 1 颗 + 每道题第一次就答对 1 颗 */
+  /* 进度：每课最多 3 颗星 = 完成任务 1 颗 + 每道题答对 1 颗（纠正后也算） */
   Sci.progress = {
     all() { return Sci.store.get('progress', {}); },
     of(id) {
       const p = this.all()[id] || {};
-      return { goal: !!p.goal, quiz: p.quiz || {} };
+      return { goal: !!p.goal, quiz: p.quiz || {}, quizWrong: p.quizWrong || {} };
     },
     update(id, fn) {
       const all = this.all();
