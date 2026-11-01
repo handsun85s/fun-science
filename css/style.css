@@ -96,6 +96,23 @@ main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 60px; }
 .hero-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .rank { display: inline-flex; gap: 8px; align-items: center; font-weight: 800; background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 4px 14px; }
 
+.experiment-search { background: #fff; border: 2px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 22px; }
+.search-label { display: block; font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+.search-input-row { display: flex; gap: 10px; align-items: center; }
+.search-input-row input { flex: 1; min-width: 0; width: 100%; min-height: 50px; border: 2px solid #d6c7ae; border-radius: 14px; padding: 10px 14px; background: #fffdf8; color: var(--ink); font: inherit; font-size: 18px; }
+.search-input-row input:focus { outline: 3px solid #ffb454; outline-offset: 2px; border-color: #ad5900; }
+.search-input-row input::placeholder { color: var(--muted); opacity: 1; }
+.search-clear { flex: none; }
+.search-summary { margin: 10px 0 0; color: var(--muted); font-size: 15px; }
+.search-results { display: grid; gap: 12px; margin-top: 14px; }
+.search-result { padding: 12px 14px; box-shadow: none; border-color: var(--line); }
+.search-result:focus { outline: 3px solid var(--c); outline-offset: 2px; }
+.search-result-copy { flex: 1; min-width: 0; overflow-wrap: break-word; }
+.search-subject { display: block; color: var(--muted); font-size: 14px; }
+.search-result .num { width: 50px; height: 50px; font-size: 28px; }
+.search-result .stars { align-self: flex-start; font-size: 16px; }
+.search-empty { margin: 0; padding: 16px; background: #fff7e6; border-radius: 12px; color: var(--muted); }
+
 .next-card {
   display: flex; align-items: center; gap: 16px;
   background: var(--c); color: #fff; text-decoration: none;
@@ -286,6 +303,13 @@ canvas.stage { display: block; width: 100%; height: auto; touch-action: none; us
 }
 
 @media (max-width: 640px) {
+  .experiment-search { padding: 14px 12px; }
+  .search-label { font-size: 20px; }
+  .search-clear { padding: 8px 12px; }
+  .search-result { flex-wrap: wrap; }
+  .search-result .search-result-copy { flex-basis: calc(100% - 70px); }
+  .search-result .stars { margin-left: 66px; }
+  .search-result .lvl { white-space: normal; }
   body { font-size: 17px; }
   .topbar { padding: 8px 16px; }
   .logo { font-size: 18px; }

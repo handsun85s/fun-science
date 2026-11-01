@@ -5,6 +5,8 @@
   const el = Sci.h;
   const app = document.getElementById('app');
   let disposeCurrent = null;
+  // 进入实验再回首页时，保留这一轮的搜索词；不写入孩子的学习进度。
+  let homeSearchQuery = '';
 
   const subjectById = id => Sci.subjects.find(s => s.id === id);
   const lessonById = id => Sci.lessons.find(l => l.id === id);
@@ -66,6 +68,67 @@
     window.scrollTo(0, 0);
   }
 
+  /* ---------------- 首页实验搜索 ---------------- */
+  function homeSearch() {
+    const input = el('input', {
+      id: 'experimentSearch', type: 'search', placeholder: '试试“磁铁”“月亮”或“编程”',
+      autocomplete: 'off', maxlength: '100', 'aria-describedby': 'searchSummary',
+      'aria-controls': 'searchResults',
+    });
+    input.value = homeSearchQuery;
+    const summary = el('p', { id: 'searchSummary', class: 'search-summary', role: 'status', 'aria-live': 'polite' });
+    const results = el('div', { id: 'searchResults', class: 'search-results', hidden: true });
+    const clear = el('button', { type: 'button', class: 'btn ghost search-clear', hidden: true,
+      onclick: () => { input.value = ''; homeSearchQuery = ''; composing = false; update(); input.focus(); },
+    }, '清空');
+    let composing = false;
+    // 先保存文字索引，输入时只更新结果区域，不打断中文输入或重画整个首页。
+    const index = learningPath().map(l => {
+      const s = subjectById(l.subject);
+      return { lesson: l, subject: s, title: l.title.toLowerCase(),
+        text: [l.title, l.desc, l.intro, s.name].join(' ').toLowerCase() };
+    });
+    function update() {
+      homeSearchQuery = input.value;
+      const query = input.value.trim().toLowerCase();
+      clear.hidden = !input.value;
+      results.replaceChildren();
+      results.hidden = !query;
+      if (!query) {
+        summary.textContent = `共 ${Sci.lessons.length} 个实验，可以搜名称、科目或介绍里的关键词。`;
+        return;
+      }
+      const words = query.split(/\s+/);
+      const matches = index.filter(item => words.every(word => item.text.indexOf(word) >= 0));
+      // 名称直接匹配的实验放前面，同组仍沿用由浅入深的顺序。
+      const ordered = matches.filter(item => item.title.indexOf(query) >= 0)
+        .concat(matches.filter(item => item.title.indexOf(query) < 0));
+      summary.textContent = `找到 ${ordered.length} 个实验`;
+      if (!ordered.length) {
+        results.append(el('p', { class: 'search-empty' }, '暂时没找到，换个短一点的词试试，例如“水”“植物”或“数学”。'));
+        return;
+      }
+      ordered.forEach(item => {
+        const l = item.lesson, s = item.subject;
+        results.append(el('a', { class: 'lesson-card search-result', href: '#/lesson/' + l.id, style: { '--c': s.color } },
+          el('span', { class: 'num', 'aria-hidden': 'true' }, l.emoji),
+          el('div', { class: 'search-result-copy' },
+            el('span', { class: 'search-subject' }, s.name), levelEl(l.level),
+            el('h3', null, l.title), el('p', null, l.desc)),
+          starsEl(Sci.progress.stars(l.id))));
+      });
+    }
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', () => { composing = false; update(); });
+    input.addEventListener('input', () => { if (!composing) update(); });
+    input.addEventListener('search', () => { if (!composing) update(); });
+    const form = el('form', { role: 'search', onsubmit: e => { e.preventDefault(); if (!composing) update(); } },
+      el('label', { for: 'experimentSearch', class: 'search-label' }, '找一个想玩的实验'),
+      el('div', { class: 'search-input-row' }, input, clear));
+    update();
+    return el('section', { class: 'experiment-search', 'aria-label': '实验搜索' }, form, summary, results);
+  }
+
   /* ---------------- 首页 ---------------- */
   function renderHome() {
     document.title = '趣味科学乐园';
@@ -117,6 +180,7 @@
 
     app.append(
       hero,
+      homeSearch(),
       nextCard,
       el('h2', { class: 'section-title' }, '🚀 选一个科目开始探险吧'),
       grid,
