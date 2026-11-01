@@ -52,7 +52,7 @@ node build-audio.js
 
 在 `js/lessons/` 里对应科目的文件中（比如 `physics.js`、`physics2.js`、`physics3.js`），照着现有的写一个 `Sci.register({...})`。新建的课程文件要在 `index.html` 里引入：
 
-- `subject`：physics / math / chemistry / biology / astronomy / geography
+- `subject`：physics / math / chemistry / biology / astronomy / geography / engineering / coding / infotech / health
 - `level`：1～5（决定难度和推荐年龄，见 `js/core.js` 里的 `levels`、`ages`）
 - `intro`、`goal`、`fact`、`quiz`：讲解、任务、知识点、题目
 - `mount(api)`：实验本体。常用的有 `api.stage()` 建画布、`api.loop()` 动画、`api.pointer()` 鼠标/触摸、
@@ -62,3 +62,13 @@ node build-audio.js
 新增一个科目：在 `js/core.js` 的 `subjects` 里加一项，再在 `index.html` 里引入对应的课程文件。
 
 代码尽量兼容老版本浏览器（老平板），用到新功能时请在 `js/core.js` 开头的兼容层里补上。
+
+## 用 Codex 继续开发
+
+在 Codex 中选择这个项目文件夹，然后直接描述要新增的功能或遇到的问题即可。本项目的开发约定保存在根目录 `AGENTS.md`，方便新的聊天继续接手。
+
+- 开始任务时先读取 `AGENTS.md` 和本说明，查看当前代码与 Git 状态。
+- 本地预览运行 `node tools/serve.js`；仅查看网页不需要安装工具依赖。
+- 课程文字变化时，重新生成朗读音频，并验证受影响的实验。
+- 上传到 GitHub 需要可用的账号授权；认证状态不会因为导入聊天而自动恢复。若提示未登录，由账号本人完成 GitHub 登录授权，不向聊天发送密码或令牌。
+- GitHub Pages 发布成功后，在原来的在线网址刷新。同步代码与更新聊天记录是两回事。
