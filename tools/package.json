@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "node serve.js",
     "audio": "node build-audio.js",
-    "test:quiz": "node test-quiz.js"
+    "test:quiz": "node test-quiz.js",
+    "test:comparisons": "node test-comparisons.js"
   },
   "devDependencies": {
     "lamejs": "1.2.1",

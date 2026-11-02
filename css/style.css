@@ -250,6 +250,15 @@ canvas.stage { display: block; width: 100%; height: auto; touch-action: none; us
 .opt.right:disabled:hover { border-color: var(--good); }
 .opt.wrong:disabled:hover { border-color: var(--bad); }
 .quiz-review { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.compare-records { margin: 12px 0; }
+.compare-records table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 16px; }
+.compare-records caption { text-align: left; font-weight: 800; padding-bottom: 8px; }
+.compare-records th, .compare-records td { border: 1px solid var(--line); padding: 10px; text-align: left; overflow-wrap: break-word; }
+.compare-records th { background: #fff7e6; }
+.compare-records th:first-child { width: 40%; }
+.compare-answer .btn { font-size: 16px; white-space: normal; text-align: left; }
+.compare-predict .chip { white-space: normal; text-align: left; }
+.controls button:disabled { cursor: default; opacity: .65; }
 .q > .btn { margin-top: 8px; }
 .fact, .stage-host { scroll-margin-top: 88px; }
 .mini-speak { border: 0; background: #f3efe6; border-radius: 999px; padding: 2px 10px; cursor: pointer; font-size: 15px; }
