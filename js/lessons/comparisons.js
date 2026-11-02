@@ -81,6 +81,9 @@
     });
   }
 
+  // 后续课件沿用同一套预测、记录和结论流程，避免各科重复实现。
+  Sci.registerComparison = register;
+
   register({
     id: 'snowshoes', subject: 'physics', level: 3, emoji: '👣', title: '雪鞋为什么不容易陷下去',
     desc: '同样重的小熊，换双宽鞋，比较压强和下陷深度',
