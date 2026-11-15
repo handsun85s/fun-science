@@ -21,6 +21,7 @@ const TYPES = {
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.mp3': 'audio/mpeg',
 };
 
 function send(res, code, text) {
@@ -77,7 +78,7 @@ function handleTts(req, url, res) {
 }
 
 // 版本号：再次双击启动时，用它判断开着的是不是旧版本
-const VERSION = 3;
+const VERSION = 4;
 const isLocal = req => /^(::1|127\.0\.0\.1|::ffff:127\.0\.0\.1)$/.test(req.socket.remoteAddress || '');
 
 const server = http.createServer((req, res) => {

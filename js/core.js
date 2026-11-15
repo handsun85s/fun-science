@@ -230,6 +230,13 @@
   // 这台设备读不了中文（没有朗读功能、没有中文语音、或者以前点了没出声），就要找帮手
   const needHelp = () => !Sci.canSpeak || !zhVoice || Sci.store.get('ttsSilent', false);
   const hasHelper = text => !!prebuilt[Sci.textKey(text)] || Sci.serverTts;
+  let speechStartTimer;
+  let speechFallbackTimer;
+
+  function clearSpeechTimers() {
+    clearTimeout(speechStartTimer);
+    clearTimeout(speechFallbackTimer);
+  }
 
   function playSrc(src, failTip, manual) {
     try {
@@ -273,9 +280,9 @@
       speechSynthesis.speak(u);
     };
     // 安卓 Chrome：取消之后马上读，这句话有时会被吞掉，稍等一下再读
-    if (busy) setTimeout(go, 150);
+    if (busy) speechStartTimer = setTimeout(go, 150);
     else go();
-    setTimeout(() => {
+    speechFallbackTimer = setTimeout(() => {
       if (started || blocked || speechSynthesis.speaking) return;
       // 自带朗读没出声：记住这台设备，以后直接请帮手，并马上补读一次
       Sci.store.set('ttsSilent', true);
@@ -289,6 +296,7 @@
     const t = cleanText(text);
     if (!t) return false;
     // 先停掉正在播放的帮手朗读；浏览器自带朗读由 speakBrowser 自己停（要处理安卓的小毛病）
+    clearSpeechTimers();
     stopPlayer();
     if (!Sci.canSpeak || (needHelp() && hasHelper(t))) return speakHelper(t, opt.manual);
     try {
@@ -302,6 +310,7 @@
     try { if (player && player.src && player.src !== SILENT_WAV) player.pause(); } catch (e) { /* 忽略 */ }
   }
   Sci.stopSpeak = function () {
+    clearSpeechTimers();
     try { if (Sci.canSpeak) speechSynthesis.cancel(); } catch (e) { /* 忽略 */ }
     stopPlayer();
   };

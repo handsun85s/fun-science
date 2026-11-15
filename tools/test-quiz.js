@@ -154,6 +154,48 @@ async function main() {
     assert.equal(await legacy.evaluate(() => Sci.progress.stars('float')), 1);
     await old.close();
     checks.push('兼容缺少新版 DOM API 的浏览器');
+
+    const speechContext = await browser.newContext();
+    await speechContext.addInitScript(() => {
+      window.spokenTexts = [];
+      window.fallbackPlays = 0;
+      window.speechBusy = false;
+      window.SpeechSynthesisUtterance = function (text) { this.text = text; };
+      Object.defineProperty(window, 'speechSynthesis', { value: {
+        get speaking() { return window.speechBusy; },
+        pending: false,
+        getVoices: () => [{ lang: 'zh-CN', name: '测试语音' }],
+        addEventListener() {},
+        cancel() { window.speechBusy = false; },
+        resume() {},
+        speak(utterance) { window.spokenTexts.push(utterance.text); },
+      } });
+      HTMLMediaElement.prototype.play = function () {
+        if (/\.mp3$|\/api\/tts\?/.test(this.src)) window.fallbackPlays++;
+        return Promise.resolve();
+      };
+    });
+    const speechPage = await speechContext.newPage();
+    speechPage.on('pageerror', e => errors.push(e.message));
+    await speechPage.clock.install();
+    await speechPage.goto(base + '#/lesson/float');
+    await speechPage.locator('.crumbs').waitFor();
+    await speechPage.evaluate(() => {
+      Sci.serverTts = true;
+      const lesson = Sci.lessons.find(l => l.id === 'float');
+      Sci.speak(lesson.intro);
+      window.speechBusy = true;
+      Sci.speak(lesson.fact);
+      location.hash = '#/';
+    });
+    await speechPage.locator('#experimentSearch').waitFor();
+    await speechPage.clock.fastForward(4500);
+    assert.deepEqual(await speechPage.evaluate(() => ({
+      spoken: window.spokenTexts.length, fallback: window.fallbackPlays,
+    })), { spoken: 1, fallback: 0 });
+    await speechContext.close();
+    checks.push('切页取消待开始的浏览器朗读及旧课程的 MP3 补读');
+
     assert.deepEqual(errors, []);
     console.log(JSON.stringify({ passed: checks, errors }, null, 2));
   } finally {
